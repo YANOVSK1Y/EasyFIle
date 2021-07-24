@@ -1,32 +1,67 @@
 import tkinter
-
-window = tkinter.Tk(className='easyfile')
-window.geometry("700x200")
-# label_file_name = tkinter.Label(text='File name')
-# label_new_file_name = tkinter.Label(text='New file name')
+from tkinter import StringVar, Frame
+from tkinter import filedialog as fd
+import os
 
 
-tkinter.Label(text="Old name", width=23, background='blue').place(x=100, y=50)
-tkinter.Label(text='Enter new name', width=23, background='green').place(x=400, y=50)
+class Easyfile(Frame):
 
-tkinter.Label(text='', width=23, bg='grey').place(x=100, y=75)
-tkinter.Entry(text='', width=13).place(x=400, y=75)
-tkinter.Entry(text='', width=10).place(x=503, y=75)
-
-
-tkinter.Button(text="Brows file", width="20").place(x=100, y=100)
-tkinter.Button(text="Raname", width="20").place(x=400, y=100)
+    def __init__(self, window):
+        Frame.__init__(self, window)
+        self.window = window
+        self.my_string_var = StringVar()
+        self.base_file_text = ''
+        self._init_window()
 
 
+    def _init_window(self):
+        self.window.title = "Easyfile"
+        # discribed labels
+        tkinter.Label(text="Old name", width=23, background='blue').place(x=100, y=50)
+        tkinter.Label(text='Enter new name', width=23, background='green').place(x=400, y=50)
+        # labels and input fields
+        tkinter.Label(text='', width=23, bg='grey').place(x=100, y=75)
+        tkinter.Entry(text='', width=13).place(x=400, y=75)
+        tkinter.Entry(text='', width=10).place(x=503, y=75)
+        # buttons
+        tkinter.Button(text="Brows file", width="20", command=self.openFiles).place(x=100, y=100)
+        tkinter.Button(text="Raname", width="20", command=self.rename).place(x=400, y=100)
+        #label for file content
+        # tkinter.Label(self.window ,text='', bg='lightblue', textvariable=self.my_string_var, justify='left').place(x=100, y=150)
+        self.text = tkinter.Text(bg='lightblue', height=10, width=20)
+        self.text.place(x=100, y=150)
 
-#
-# label_file_name.pack()
-# label_new_file_name.pack()
-#
-# label_filename = tkinter.Label(text="", width=10)
-# label_rename_file_input = tkinter.Label(text='enter new name', width=20)
-#
-# label_filename.pack()
-# label_rename_file_input.pack()
+    def readl_data_from_file(self, filename):
+        with open(filename, 'r') as f:
+            text = f.read()
+            self.base_file_text = text
+        self.text.insert('1.0', text)
+        return text
 
-window.mainloop()
+    def openFiles(self):
+        f_types = [("All Files","*.*"),("PDF File" , "*.pdf"), ('Python files', '*.py'), ("Text files", '*.txt')]
+        dlg = fd.Open(self, filetypes = f_types)
+        fl = dlg.show()
+
+        if fl != '':
+            self.my_string_var.set(self.readl_data_from_file(fl))
+
+
+    def writedata(self), filename, text):
+        with open(filename, 'w') as f:
+            f.write(text)
+
+
+
+
+
+
+    def rename(self):
+        pass
+
+if __name__ == '__main__':
+
+    window = tkinter.Tk(className='easyfile')
+    window.geometry("700x400")
+    e = Easyfile(window)
+    window.mainloop()
